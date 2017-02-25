@@ -1,0 +1,46 @@
+        MBED DUELING TANKS FEATURE CHECKLIST
+
+
+Student Name: Sreeramamurthy Tripuramallu
+
+BASIC GAME FUNCTIONALITY
+
+__X__  Game Entry Menu
+
+__X__  Supporting 1-Player/2-Player Game Control
+
+__X__  Tank movement
+
+__X__  Bullet launch & trajectory, collision detection w/ appropriate destruction
+
+__X__  Landscape enhancement
+
+__X__  Turn indicator
+
+__X__  Sound effects
+
+__X__  Detecting Game Over
+
+EXTRA FEATURES
+
+__X__  Multiple lives: show lives remaining in icons
+
+__X__  Powerup: indicate type: Shrink tank size
+
+__X__  Powerup: indicate type: Expand oppoent tank size
+
+__X__  Powerup: indicate type: Decrease speed of oppoents tank
+
+__X__  Add new hardware to do something interesting
+
+__X__  Enhanced entry game menu for configuring game
+
+__X__  Keep track of game history and show in an interesting way
+
+__X__  Enhanced graphics: more dramatic shots and explosion animation
+
+__X__  Changing elevations in landscape
+
+__X__  Additional sound effects: when bullet hits tank
+
+____  Other: (please describe)

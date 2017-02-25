@@ -1,0 +1,81 @@
+Useful Information:
+
+1. START NOW.
+If you're reading this, you are ALREADY LATE. Get started NOW. This project may seem easy, but most of the points will come from additional features you design yourself.
+
+  This is NONTRIVIAL.
+  Trust me. I'm writing this at 6am for a reason.
+
+		  
+2. Tips for debugging:
+pc.printf(...) is your friend. The FIRST ORDER OF BUSINESS should be to download Tera Term or something similar so you can view mbed serial output on your laptop. 
+  You may need to install a driver as well (I don't remember.)
+  - Go here for more details.
+    https://developer.mbed.org/handbook/SerialPC
+  - IN YOUR PRODUCTION CODE'S GAME LOOP, TAKE OUT ALL CALLS TO pc.printf(). 
+    THEY ARE VERY SLOW AND WILL SIGNIFICANTLY IMPACT YOUR FRAMERATE.
+		
+Try to produce your code in small increments. Test each new feature along the way. DO NOT WRITE 1,000,000 LINES OF UNTESTED CODE AND BRING IT TO ME ASKING WHY IT DOESN'T WORK.
+			
+			
+3. The uLCD screen is 128 pixels wide and 128 pixels tall.
+
+4. With the default font, the uLCD screen is 18 chars wide and 15 chars tall. 
+You can use the sync.puts() function to write text to the screen.
+	
+5. The global Game_Synchronizer, sync, uses the Ethernet connection
+to synchronize the two players when in MULTI_PLAYER mode. For reasons of 
+symmetry, it has been designed to work in SINGLE_PLAYER mode as well.
+		
+Game_Synchronizer provides wrappers for a subset of the LCD draw commands.
+(For more information, see the Game_Synchronizer spec.)
+For example, a call to sync.line(x1, y1, x2, y2) will append 
+	[LINE_CMD, x1, y1, x2, y2]
+to the synchronizer's list of draw commands.
+				
+At the end of the game loop, you MUST call sync.update(). This will send the list of draw commands to the other player (in MULTI_PLAYER mode) and it will retrieve the other player's inputs. On both mbeds, a loop inside the update() method will parse the list of commands and send them to the uLCDs. If the game is in SINGLE_PLAYER mode, this will only happen on the p1 side.
+
+	
+6. The general form of the game loop looks like this.
+	
+  while(1) {
+       1. Find out the button and accelerometer values for both players.
+       2. Depending on whose turn it is, respond to the player's inputs.
+          + Move the player's tank & gun according to the accelerometer inputs.
+	  + If the shoot button is pressed, shoot the player's bullet.
+	  + Call the timestep() function for the current player's bullet.
+	     - Plug in the elapsed time since the last frame.
+	     - If the bullet is currently in_flight, the timestep() function will                               redraw it in its new position and return a code 
+               to be used for collision	detection.
+	  + Use the timestep() return code to decide what has been hit and where. 
+             - Do something about it.
+	     - Call sync.update() to flush the draw buffer and draw the frame.
+	}
+		
+		
+7. The game_menu function runs only on player one's mbed because the Synchronizer can't be initialized until the user selects a play_mode (MULTI_PLAYER or SINGLE_PLAYER). 
+Because of this, in game_menu, you should use
+	uLCD.function(...) instead of sync.function(...) 
+where function() is a drawing function like line() or circle().
+		
+8. As an aside, the native coordinate system of the uLCD places its origin in the top left corner. Because I'm a nice person, all calls to sync.function(x, y) will translate your coordinates to a much more convenient coordinate system where the origin is in the bottom left corner.
+
+Be aware that calls to uLCD.function(...) use the 4th quadrant while calls to sync.function(...) use the first.
+
+9. Pixels are represented as 24-bit colors (e.g., in globals.h: #define SKY_COLOR  0x7EC0EE). All drawing functions (writing to the screen) expect colors to be integers that encode the color in the lower 24 bits (8 bits for each color component: R, G, B). However, the function sync.read_pixel (which uses the uLCD read pixel function) returns a pixel color that is encoded in 16 bits.  A few bits are shaved off of each color component.  This means that if you read a pixel using this function and you would like to compare it to one of the 24-bit colors, such as SKY_COLOR, you need to convert the 24-bit color to 16 bits using sync.CONVERT_24_TO_16_BPP.  We've provided a function to make this easier: sync.pixel_eq that takes compares the colors of two pixels, one in 16bpp and the other 24bpp by doing the appropriate conversion.
+
+So if you want to read a pixel and then check if it matches SKY_COLOR, you can do this:
+    int color_16bb = sync.read_pixel(x, y);
+    if (sync.pixel_eq(color_16bpp, SKY_COLOR)) {
+        ...
+    }
+			  
+
+
+		
+	
+	
+
+		
+	
+	

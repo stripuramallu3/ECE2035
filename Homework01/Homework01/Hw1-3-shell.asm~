@@ -1,0 +1,42 @@
+# HW1-3
+# Student Name: Sreeramamurthy	Tripuramallu
+# Date: 09/02/2015
+#
+# This program computes the difference in the frequency of
+# boiling temperatures and the frequency of freezing temperatures in a
+# set of 25 integers, Temps.
+
+.data
+Temps:    .word 110, 5, 200, -73, 0
+          .word 17, 9, -7, -3, 100
+          .word 25, 242, -126, 108, -60
+          .word 26, 8, 60, 27, 117,
+          .word 8, 7, 33, 100, 125
+FreqDiff: .alloc 1
+
+.text
+	start: 			add $1, $0, $0    #Store Number of boiling points
+				add $2, $0, $0    #Store Number of freezing points
+				addi $10, $0, 99
+				add $3, $0, $0
+				lw $6, Temps($3)
+	initalize: 		add $8, $0, $0    #Indexing for loop and temps
+				addi $4, $0, 25
+	predicate: 		slt $5, $8, $4
+				beq $5, $0, endfor
+	consequent: 		slt $5, $6, $0
+				beq $5, $0, else
+				addi $2, $2, 1
+	else: 			slt $5, $10, $6
+				beq $5, $0, endif 
+				addi $1, $1, 1 
+	endif: 			addi $8, $8, 1
+				addi $3, $3, 4
+				lw $6, Temps($3)
+				j predicate
+	endfor: 		sub $1, $1, $2
+	end: 			sw $1, FreqDiff($0)
+				jr $31   			# return to OS
+				
+
+

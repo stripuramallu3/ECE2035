@@ -1,0 +1,22 @@
+add $1, $zero, $zero    #Store Number of boiling points
+add $2, $zero, $zero    #Store Number of freezing points
+addi $29, $zero, 99
+addi $30, $zero, $zero  #Index
+		lb $6, Temps($30)
+initalize: 	add $3, $zero, $zero
+		addi $4, $zero, 25
+predicate: 	slt $5, $3, $4
+		beq $5, $zero, endfor: 
+consequentfor: 	slt $5, $6, $zero
+		beq $5, $zero, else
+		addi $2, $2, 1
+else: 		slt $5, $29, $6
+		beq $5, 0, endif 
+		addi $1, $1, 1 
+endif: 		addi $3, $3, 1
+		addi $30, $30, 1
+		lb $6, Temps($30)
+		j predicate
+endfor: 
+
+			
